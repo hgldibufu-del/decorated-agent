@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #app {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-surface text-slate-200 antialiased;
+    font-family:
+      "Inter", "PingFang SC", "Microsoft YaHei", system-ui, -apple-system, sans-serif;
+  }
+}
+
+@layer components {
+  .panel {
+    @apply rounded-lg border border-surface-line bg-surface-soft;
+  }
+
+  .panel-title {
+    @apply px-4 py-3 text-sm font-semibold text-slate-300 border-b border-surface-line;
+  }
+
+  .kv {
+    @apply flex items-center justify-between gap-3 py-1 text-xs;
+  }
+
+  .kv-key {
+    @apply text-slate-500;
+  }
+
+  .kv-value {
+    @apply font-mono text-slate-300;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-1.5 rounded border border-surface-line px-3 py-1.5 text-xs text-slate-200 transition-colors hover:bg-surface-line disabled:cursor-not-allowed disabled:opacity-40;
+  }
+
+  .btn-primary {
+    @apply border-transparent bg-indigo-500 text-white hover:bg-indigo-400 disabled:bg-indigo-500/40;
+  }
+
+  .input {
+    @apply w-full rounded border border-surface-line bg-surface px-3 py-2 text-sm text-slate-100 placeholder:text-slate-600 focus:border-indigo-400 focus:outline-none;
+  }
+
+  .tag {
+    @apply inline-flex items-center rounded border border-surface-line px-2 py-0.5 text-xs text-slate-300;
+  }
+
+  .th {
+    @apply px-3 py-2 font-medium text-slate-500;
+  }
+
+  .td {
+    @apply px-3 py-2 text-slate-300;
+  }
+}

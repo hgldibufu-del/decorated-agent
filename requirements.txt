@@ -1,0 +1,12 @@
+# =============================================================================
+# Runtime dependency entrypoint (used by container image / CI, non-editable).
+# Each local package declares its own third-party deps in its pyproject.toml,
+# so only local paths are listed here to avoid duplicated definitions.
+# NOTE: keep this file ASCII-only - pip on Windows decodes it with the locale
+# codec (GBK) unless a UTF-8 BOM is present.
+# =============================================================================
+./packages/schemas
+./packages/infrastructure
+./packages/domain
+./apps/agent-runtime
+./apps/api

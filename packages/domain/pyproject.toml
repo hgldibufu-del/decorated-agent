@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dw-domain"
+version = "0.1.0"
+description = "装修 AI Agent Workbench：领域模型 / 仓储 / 应用服务（Phase 1 业务基础）"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "dw-schemas",
+    "dw-infrastructure",
+    "sqlalchemy[asyncio]>=2.0",
+    # JWT 令牌签发与校验。唯一新增的第三方依赖，理由见 README「组件引入说明」。
+    "PyJWT>=2.9",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.24"]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+dw_domain = ["py.typed"]

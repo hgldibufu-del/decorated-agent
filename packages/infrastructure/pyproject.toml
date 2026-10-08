@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dw-infrastructure"
+version = "0.1.0"
+description = "装修 AI Agent Workbench：基础设施适配器（配置 / 日志 / DB / Redis / Kafka）"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "dw-schemas",
+    "pydantic>=2.9",
+    "pydantic-settings>=2.5",
+    # 必须带 [asyncio] extra：否则镜像里缺 greenlet，import 时直接崩
+    "sqlalchemy[asyncio]>=2.0",
+    "asyncpg>=0.29",
+    # Phase 4 RAG：pgvector 向量检索（服务端扩展 + 此 Python 驱动包）
+    "pgvector>=0.3",
+    "redis>=5.0",
+    "aiokafka>=0.12",
+    # Phase 9 可观测：只依赖 api + sdk。未启用（或未配 OTLP 端点）时 span 为 no-op，
+    # 对启动与测试零副作用；OTLP 导出器按需安装：pip install "dw-infrastructure[otel]"
+    "opentelemetry-api>=1.27",
+    "opentelemetry-sdk>=1.27",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.24"]
+otel = ["opentelemetry-exporter-otlp>=1.27"]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+dw_infrastructure = ["py.typed", "evaluation/datasets/*.json"]

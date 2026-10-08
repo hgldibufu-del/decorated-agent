@@ -1,0 +1,94 @@
+# =============================================================================
+# 装修企业 AI Agent Workbench —— 本地基础设施栈
+# -----------------------------------------------------------------------------
+# Phase 0 只包含基础设施，不含业务服务（业务服务由后续 Phase 追加）：
+#   postgres : 业务事实源，镜像自带 pgvector（Phase 4 起支撑 RAG 向量检索）
+#   redis    : 短期运行状态 / 缓存 / 分布式锁（不作为业务事实源）
+#   kafka    : 业务事件总线，单一 KRaft 节点（表达「发生了什么」，不做 Agent RPC）
+#
+# Kafka 监听器说明：
+#   INTERNAL://kafka:9092   供 compose 网络内的容器访问
+#   EXTERNAL://localhost:9094  供宿主机脚本 / 集成测试访问
+# =============================================================================
+
+name: dw-workbench
+
+services:
+  # ---------------------------------------------------------------------------
+  # PostgreSQL + pgvector
+  # ---------------------------------------------------------------------------
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: dw-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-decoration}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-decoration}
+      POSTGRES_DB: ${POSTGRES_DB:-workbench}
+    # 宿主机 5432 常被本地已安装的 PostgreSQL 服务占用，统一改用 55432 避免抢占，
+    # 容器内端口仍是 5432。
+    ports:
+      - "55432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./infra/postgres/init.sql:/docker-entrypoint-initdb.d/10-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-decoration} -d ${POSTGRES_DB:-workbench}"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 10s
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Redis
+  # ---------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: dw-redis
+    command: ["redis-server", "--appendonly", "no", "--save", ""]
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 5s
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Kafka (KRaft 单节点)
+  # ---------------------------------------------------------------------------
+  kafka:
+    image: apache/kafka:3.9.0
+    container_name: dw-kafka
+    environment:
+      KAFKA_NODE_ID: "1"
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@dw-kafka:9093"
+      KAFKA_LISTENERS: "INTERNAL://:9092,CONTROLLER://:9093,EXTERNAL://:9094"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://dw-kafka:9092,EXTERNAL://localhost:9094"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: "0"
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_LOG_DIRS: "/var/lib/kafka/data"
+    ports:
+      - "9094:9094"
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server dw-kafka:9092 --list"]
+      interval: 10s
+      timeout: 10s
+      retries: 15
+      start_period: 25s
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  kafka-data:

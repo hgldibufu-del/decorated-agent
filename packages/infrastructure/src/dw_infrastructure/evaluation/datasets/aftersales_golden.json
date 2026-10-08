@@ -1,0 +1,65 @@
+{
+  "name": "aftersales-golden-v1",
+  "k": 3,
+  "documents": [
+    {
+      "key": "kb-waterproof",
+      "title": "卫生间防水与渗漏",
+      "content": "卫生间渗水漏水，需做闭水试验排查防水渗漏点，重做防水层并复验。",
+      "source": "kb/waterproof"
+    },
+    {
+      "key": "kb-electric",
+      "title": "电路改造与强弱电",
+      "content": "电路改造要求强弱电分离，线管横平竖直，插座回路独立，绝缘测试合格。",
+      "source": "kb/electric"
+    },
+    {
+      "key": "kb-wood",
+      "title": "木工柜体与收口",
+      "content": "木工柜体要求龙骨牢固、收口平整、柜体方正，对角线偏差达标。",
+      "source": "kb/wood"
+    },
+    {
+      "key": "kb-paint",
+      "title": "墙面油漆与平整度",
+      "content": "墙面油漆施工要求基层平整、无流挂色差、环保检测达标。",
+      "source": "kb/paint"
+    },
+    {
+      "key": "kb-quote",
+      "title": "装修报价与预算",
+      "content": "装修报价预算造价，套餐材料价格与计价方式，按面积估算。",
+      "source": "kb/quote"
+    },
+    {
+      "key": "kb-design",
+      "title": "户型设计与风格",
+      "content": "户型布局设计方案效果图，风格与色板搭配，空间规划建议。",
+      "source": "kb/design"
+    },
+    {
+      "key": "kb-progress",
+      "title": "施工进度与工期",
+      "content": "施工进度按阶段推进，工期计划与实际对比，延期需调整工序与人力。",
+      "source": "kb/progress"
+    },
+    {
+      "key": "case-waterproof",
+      "title": "渗水维修案例",
+      "content": "卫生间渗水维修案例：重做防水层并做闭水试验后解决，回访无复发。",
+      "source": "case/waterproof-1",
+      "metadata": { "kind": "case", "case_id": "C1" }
+    }
+  ],
+  "cases": [
+    { "query": "卫生间漏水怎么排查", "relevant": ["kb-waterproof"] },
+    { "query": "强弱电分离怎么施工", "relevant": ["kb-electric"] },
+    { "query": "柜体收口不平怎么办", "relevant": ["kb-wood"] },
+    { "query": "墙面流挂色差", "relevant": ["kb-paint"] },
+    { "query": "装修报价怎么估算", "relevant": ["kb-quote"] },
+    { "query": "户型风格怎么选", "relevant": ["kb-design"] },
+    { "query": "工期延期怎么调整", "relevant": ["kb-progress"] },
+    { "query": "渗水维修案例", "relevant": ["case-waterproof"] }
+  ]
+}

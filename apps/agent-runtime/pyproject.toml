@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dw-agent-runtime"
+version = "0.1.0"
+description = "装修 AI Agent Workbench：注册中心、工具治理与 Run 执行（Phase 2）"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "dw-schemas",
+    "dw-domain",
+    "dw-infrastructure",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.24"]
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+dw_agent_runtime = ["py.typed"]

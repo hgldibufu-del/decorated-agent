@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dw-mcp-server"
+version = "0.1.0"
+description = "装修 AI Agent Workbench：MCP stdio 传输层（把已注册工具经 MCP 协议暴露给跨进程调用方）"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "dw-schemas",
+    "dw-domain",
+    "dw-infrastructure",
+    "dw-agent-runtime",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.24"]
+
+[project.scripts]
+dw-mcp-server = "dw_mcp_server.__main__:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+dw_mcp_server = ["py.typed"]
